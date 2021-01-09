@@ -1,4 +1,5 @@
 streamlit
+doccano-client
 requests
 jsonlib
 hashlib
@@ -14,6 +15,3 @@ pyttsx3
 SpeechRecognition
 docx2txt
 python-docx
-antiword
-doccano-client
-
