@@ -1,7 +1,7 @@
 streamlit
 doccano-client
 requests
-jsonlib
+libjson-c-dev
 sockets
 socket.py
 pandas
