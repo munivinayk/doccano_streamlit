@@ -473,7 +473,7 @@ if button:
         
 		add_url = f'{url}/v1/projects/{project_id}/docs'
 		add_url = add_url.replace("//","/")
-		add_url = add_url.replace("//","/")
+		add_url = add_url.replace("https:/","https://")
 		st.write(add_url)
 		response = doccano_client.post(add_url, json=data)
 		st.success("cleaned text successfully uploaded to doccano")    
