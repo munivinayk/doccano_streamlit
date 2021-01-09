@@ -16,3 +16,4 @@ opencv-python
 pdf2image
 pdfminer.six
 pdfminer3
+requests-toolbelt
