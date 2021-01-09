@@ -61,7 +61,7 @@ st.set_option('deprecation.showfileUploaderEncoding', False)
 #button1 = st.button("Retrieve Credentials")
 #if button1:
 st.subheader("Doccano connection form")
-f=open("./doccano_cred.txt","r")
+f=open("doccano_cred.txt","r")
 credentials = f.readline()
 f.close()
 y = json.loads(credentials)
