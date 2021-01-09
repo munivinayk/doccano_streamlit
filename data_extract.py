@@ -152,6 +152,7 @@ def file_classify(stringio):
     second = splitted[1]
     combine = first+" "+second
     combine_strip = first.strip()
+    st.write(combine_strip)
     if "JFIF" in combine_strip:
         file_classification = file_classification+"image"
     elif "PDF" in combine_strip:
@@ -164,8 +165,10 @@ def file_classify(stringio):
         file_classification = file_classification+"wav"
     elif "M4A" in combine_strip:
         file_classification = file_classification+"m4a"
-    elif "[Content_Types].xml" in combine_strip:
+    elif "PK" in combine_strip:
         file_classification = file_classification+"word"
+    elif ">" in combine_strip:
+        file_classification = file_classification+"word_old"
     return file_classification
 
 #Function to convert text to speech
@@ -501,7 +504,7 @@ hide_streamlit_style = """
             #MainMenu {visibility: hidden;}
             footer {visibility: hidden;}
 	    footer:after {
-	    content:'© Copyright Proliflux 2020'; 
+	    content:'© Copyright Proliflux 2021'; 
 	    visibility: visible;
 	    display: block;
 	    position: relative;
