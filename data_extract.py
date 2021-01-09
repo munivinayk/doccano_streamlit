@@ -92,6 +92,7 @@ PDF_Image_path = "PDF_Image"
 pdf_image_path = ""
 pdf_path = ""
 TEXT_PDF2image = ""
+doccano_url = "https://share.streamlit.io/munivinayk/doccano_streamlit/main/Docanno_conn.py"
 
 
 HTML_WRAPPER = """<div style="overflow-x: auto; border: 1px solid #e6e9ef; border-radius: 0.25rem; padding: 1rem; margin-bottom: 2.5rem">{}</div>"""
@@ -477,8 +478,8 @@ if button:
 		st.success("cleaned text successfully uploaded to doccano")    
 		st.balloons()
 	else:
-		url2 = 'http://localhost:8502/'
-		webbrowser.open_new_tab(url2)
+		#url2 = 'http://localhost:8502/'
+		webbrowser.open_new_tab(doccano_url)
 
 #push button to save the cleaned text
 yourdocument = st.text_input("To download file - please enter the file name (with out the extension)",filename)
