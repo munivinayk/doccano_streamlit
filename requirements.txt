@@ -5,7 +5,6 @@ sockets
 socket.py
 pandas
 pybase64
-pdfminer
 textract
 numpy
 pillow
