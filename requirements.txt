@@ -17,4 +17,5 @@ SpeechRecognition
 docx2txt
 python-docx
 antiword
+doccano-client
 
