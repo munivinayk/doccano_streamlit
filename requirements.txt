@@ -10,7 +10,6 @@ pdfminer
 textract
 numpy
 pillow
-webbrowser
 pyttsx3
 SpeechRecognition
 docx2txt
