@@ -13,3 +13,5 @@ pyttsx3
 SpeechRecognition
 docx2txt
 python-docx
+opencv-python
+pdf2image
