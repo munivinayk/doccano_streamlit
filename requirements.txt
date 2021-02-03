@@ -17,3 +17,7 @@ pdf2image
 pdfminer.six
 pdfminer3
 requests-toolbelt
+joblib
+pytorch
+transformers
+
