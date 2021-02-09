@@ -27,7 +27,6 @@ import time
 from enum import Enum
 from io import BytesIO, StringIO
 from typing import Union 
-import pandas as pd
 import streamlit as st
 import base64
 from pdfminer.high_level import extract_pages
@@ -66,9 +65,12 @@ import array
 from pathlib import Path
 import streamlit.components.v1 as stc
 import docx2txt
+import texthero as hero
 #from st_annotated_text import annotated_text
 #import spacy_streamlit
 #from spacy_streamlit import visualize_ner
+
+nltk.download('stopwords')
 
 #Key input variables
 icon = './images/Proliflux.ico'
@@ -125,7 +127,7 @@ def process_text(model_name, text):
     return nlp(text)
 
 #title and icon information
-st.set_page_config(page_title='ML-Developer Workbench', page_icon = icon, initial_sidebar_state = 'auto')
+st.set_page_config(page_title='ML-Developer Workbench', page_icon = icon, initial_sidebar_state = 'auto', layout="wide")
 
 #to download the data frame
 def get_table_download_link(df):
@@ -322,7 +324,6 @@ model_load_state = st.info(f"Loading model '{spacy_model}'...")
 nlp = load_model(spacy_model)
 model_load_state.empty()
 
-st.subheader("ML Opps developer work - Data Extraction")
 format_types=["png", "jpg", "pdf", "jpeg", "mp3", "wav", ".docx"]
 
 file = st.file_uploader("Upload file", type=format_types)
@@ -363,14 +364,20 @@ elif file is not None:
             DEFAULT_TEXT2 = response.json()["text"]
         else:
             DEFAULT_TEXT2 = f"API response code {response.status_code}"
-        st.image(image_array, use_column_width=True,)
+            
+        file_expander = st.beta_expander("View the image File")
+        with file_expander:
+            st.image(image_array, use_column_width=True,)
     
     
     elif file_classification == ("pdf"):
         #global pdf_image_path
         base64_pdf = base64.b64encode(bytes_data).decode('utf-8')
-        pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
-        st.markdown(pdf_display, unsafe_allow_html=True)
+        file_expander = st.beta_expander("View the PDf File")
+        with file_expander:
+            #'View the PDf file'
+            pdf_display = f'<embed src="data:application/pdf;base64,{base64_pdf}" width="700" height="1000" type="application/pdf">'
+            st.markdown(pdf_display, unsafe_allow_html=True)
         for page_layout in extract_pages(file):
             for element in page_layout:
                 if isinstance(element, LTTextContainer):
@@ -435,8 +442,16 @@ DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 
-text = st.text_area("Text to analyze", DEFAULT_TEXT3, height=120)
-doc = process_text(spacy_model, text)
+text_expander = st.beta_expander("Edit the extracted text")
+with text_expander:
+    text = st.text_area("Text to analyze", DEFAULT_TEXT3, height=120)
+    doc = process_text(spacy_model, text)
+text == DEFAULT_TEXT3
+doc = process_text(spacy_model, DEFAULT_TEXT3)
+
+raw_df_list =[]
+raw_df = pd.DataFrame(columns=['Raw'])
+raw_df_list.append(text)
 
 if "parser" in nlp.pipe_names:
     st.subheader("Dependency Parse & Part-of-speech tags")
@@ -469,8 +484,9 @@ if "ner" in nlp.pipe_names:
     html = displacy.render(doc, style="ent", options={"ents": labels})
     # Newlines seem to mess with the rendering
     html = html.replace("\n", " ")
-    st.write(HTML_WRAPPER.format(html), unsafe_allow_html=True)
-    attrs = ["text", "label_", "start", "end", "start_char", "end_char"]
+    col1, col2 = st.beta_columns(2)
+    col1.write(HTML_WRAPPER.format(html), unsafe_allow_html=True)
+    attrs = ["text", "label_"]
     if "entity_linker" in nlp.pipe_names:
         attrs.append("kb_id_")
     data = [
@@ -479,8 +495,8 @@ if "ner" in nlp.pipe_names:
         if ent.label_ in labels
     ]
     df = pd.DataFrame(data, columns=attrs)
-    st.dataframe(df)
-    st.markdown(get_table_download_link(df), unsafe_allow_html=True)
+    col2.dataframe(df)
+    col2.markdown(get_table_download_link(df), unsafe_allow_html=True)
     
 
 
@@ -505,14 +521,16 @@ if vector_size:
     else:
         st.error(similarity)
 
-st.subheader("Token attributes")
 
-if st.button("Show token attributes"):
+
+if st.sidebar.checkbox("Show token attributes"):
+    st.subheader("Token attributes")
     attrs = [
         "idx",
         "text",
         "lemma_",
         "pos_",
+        "tag_",
         "tag_",
         "dep_",
         "head",
@@ -530,10 +548,12 @@ if st.button("Show token attributes"):
     st.dataframe(df)
 
 
-st.subheader("JSON Doc")
-if st.button("Show JSON Doc"):
+
+if st.sidebar.checkbox("Show JSON Doc"):
+    st.subheader("JSON Doc")
     st.json(doc.to_json())
 
-st.subheader("JSON model meta")
-if st.button("Show JSON model meta"):
+
+if st.sidebar.checkbox("Show JSON model meta"):
+    st.subheader("JSON model meta")
     st.json(nlp.meta)

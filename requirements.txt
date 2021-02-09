@@ -21,5 +21,6 @@ joblib
 pytorch
 transformers
 googletrans
+texthero
 
 
