@@ -66,11 +66,29 @@ from pathlib import Path
 import streamlit.components.v1 as stc
 import docx2txt
 import texthero as hero
-#from st_annotated_text import annotated_text
-#import spacy_streamlit
-#from spacy_streamlit import visualize_ner
+import nltk
+import ssl
+import nltk
+import ssl
+import matplotlib.pyplot as plt
+import googletrans
+from googletrans import Translator
+
+translator = Translator()
+
+#get supported googletrans languages
+lang_df = pd.DataFrame.from_dict(googletrans.LANGUAGES,  orient='index', columns=['Language'])
+
+try:
+    _create_unverified_https_context = ssl._create_unverified_context
+except AttributeError:
+    pass
+else:
+    ssl._create_default_https_context = _create_unverified_https_context
 
 nltk.download('stopwords')
+
+
 
 #Key input variables
 icon = './images/Proliflux.ico'
@@ -340,7 +358,7 @@ elif file is not None:
     #encode_text = st.text_area("Encoded_text",bytes_data)
     stringio = bytes_data.decode("utf-8", errors="ignore")
     file_classification = file_classify(stringio)
-    st.write("Filtype: "+ file_classification)
+    st.info("Filtype: "+ file_classification)
     #decode_text = st.text_area("Decoded_text",stringio)
     
     
@@ -442,6 +460,8 @@ DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 
+language = translator.detect(DEFAULT_TEXT3)
+st.info("Document Language: "+ langauge)
 text_expander = st.beta_expander("Edit the extracted text")
 with text_expander:
     text = st.text_area("Text to analyze", DEFAULT_TEXT3, height=120)
@@ -449,9 +469,43 @@ with text_expander:
 text == DEFAULT_TEXT3
 doc = process_text(spacy_model, DEFAULT_TEXT3)
 
-raw_df_list =[]
-raw_df = pd.DataFrame(columns=['Raw'])
-raw_df_list.append(text)
+#texthero for wordcloud
+raw_df_text =[]
+raw_df_text.append(text)
+
+df_raw = pd.DataFrame()
+df_raw['raw_content'] = raw_df_text
+df_raw['clean_content'] = hero.clean(df_raw['raw_content'])
+from texthero import preprocessing
+custom_pipeline = [preprocessing.fillna,
+                   preprocessing.lowercase,
+                   preprocessing.remove_whitespace,
+                   preprocessing.remove_punctuation,
+                   preprocessing.remove_urls,
+                   ]
+
+df_raw['clean_custom_content'] = df_raw['raw_content'].pipe(hero.clean, custom_pipeline)
+
+#NUM_TOP_WORDS = 20
+#topwords = hero.visualization.top_words(df_raw['clean_content']).head(NUM_TOP_WORDS)
+#top_20 = topwords.plot.bar(rot=90, title="Top 20 words");
+#plt.imshow(top_20, interpolation='bilinear')
+#plt.axis("off")
+#plt.show()
+#st.pyplot()
+
+#wordcloud = hero.wordcloud(df_raw.clean_content, max_words=30,)
+# Display the generated image:
+st.set_option('deprecation.showPyplotGlobalUse', False)
+from wordcloud import WordCloud
+wordcloud = WordCloud(background_color="white").generate(text)
+wordcloud_expander = st.beta_expander("View the wordcloud")
+with wordcloud_expander:
+    plt.imshow(wordcloud, interpolation='bilinear')
+    plt.axis("off")
+    plt.show()
+    st.pyplot()
+
 
 if "parser" in nlp.pipe_names:
     st.subheader("Dependency Parse & Part-of-speech tags")
