@@ -23,5 +23,4 @@ transformers
 googletrans
 texthero
 WordCloud
-
-
+langdetect

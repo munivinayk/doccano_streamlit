@@ -6,7 +6,6 @@ import numpy as np
 import requests
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-
 TESSERACT_API_IP = os.getenv("TESSERACT_API_IP", "localhost")
 TESSERACT_API_PORT = os.getenv("TESSERACT_API_PORT", 8000)
 

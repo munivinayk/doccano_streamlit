@@ -74,7 +74,11 @@ import matplotlib.pyplot as plt
 import googletrans
 from googletrans import Translator
 
-translator = Translator()
+try:
+    translator = Translator()
+except:
+    st.warning("Translation services are offline")
+#translator = Translator(service_urls=['translate.googleapis.com'])
 
 #get supported googletrans languages
 lang_df = pd.DataFrame.from_dict(googletrans.LANGUAGES,  orient='index', columns=['Language'])
@@ -460,8 +464,15 @@ DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 DEFAULT_TEXT3=DEFAULT_TEXT3.replace('  '," ")
 
-language = translator.detect(DEFAULT_TEXT3)
-st.info("Document Language: "+ langauge)
+try:
+    detect_lang = translator.detect(DEFAULT_TEXT3)
+    language = detect_lang[0]
+    st.write(language)
+    st.info("Document Language: ")
+except:
+    from langdetect import detect
+    language = detect(DEFAULT_TEXT3)
+    st.info("Document Language: "+ language)
 text_expander = st.beta_expander("Edit the extracted text")
 with text_expander:
     text = st.text_area("Text to analyze", DEFAULT_TEXT3, height=120)
