@@ -24,3 +24,5 @@ googletrans
 texthero
 WordCloud
 langdetect
+spacy==2.3.5
+certifi
