@@ -156,7 +156,15 @@ def main():
 	menu = ["Home","Login","SignUp"]
 	choice = st.sidebar.selectbox("",menu,index=menu_index)
 	#st.image(banner,width=500, height=100)
-
+    
+    Host = "LAZ-SG-L-M-8129.local"
+    port = 8502
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        s.connect((host, port))
+        s.sendall(b'Hello, world')
+        data = s.recv(1024)
+    
+    st.write(repr(data))
 
 	if choice == "Home":
 		st.subheader("User login info")

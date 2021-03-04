@@ -26,3 +26,7 @@ WordCloud
 langdetect
 spacy==2.3.5
 certifi
+fastapi
+uvicorn
+git+https://github.com/deepset-ai/haystack.git
+urllib3==1.25.4
