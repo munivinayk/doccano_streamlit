@@ -4,3 +4,4 @@ pytesseract==0.2.6
 fastapi==0.59.0
 uvicorn==0.11.7
 python-multipart
+spacy==2.3.5
